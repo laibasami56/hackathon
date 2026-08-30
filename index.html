@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serviro — Web Development & IT Service Marketplace</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body data-page="index" class="text-slate-100 min-h-screen flex items-center justify-center p-4 relative overflow-x-hidden">
+
+  <!-- ambient orbs -->
+  <div class="hero-orb w-[420px] h-[420px] bg-indigo-500 -top-32 -left-32"></div>
+  <div class="hero-orb w-[380px] h-[380px] bg-cyan-400 -bottom-24 -right-24"></div>
+
+  <div class="w-full max-w-md relative">
+    <!-- Brand -->
+    <div class="text-center mb-7 reveal reveal-visible">
+      <div class="inline-flex items-center gap-2 mb-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="white"/></svg>
+        </div>
+        <h1 class="font-display text-3xl font-bold tracking-tight">Serv<span class="gradient-text">iro</span></h1>
+      </div>
+      <p class="text-slate-400 text-sm">Where businesses hire elite web & IT talent — end to end.</p>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="glass rounded-3xl p-6 sm:p-8 shadow-2xl reveal reveal-visible" style="transition-delay:80ms">
+
+      <!-- Role Selector -->
+      <p class="label mb-2">I am a…</p>
+      <div class="grid grid-cols-2 gap-3 mb-6">
+        <button id="role-customer" type="button" onclick="app.setRole('customer')" class="role-card border-2 border-indigo-500 bg-indigo-500/10 text-white rounded-2xl p-4 text-center cursor-pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="mx-auto mb-1.5"><path d="M20 21a8 8 0 10-16 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/></svg>
+          <h4 class="text-sm font-bold">Customer</h4>
+          <p class="text-[10px] opacity-70 mt-0.5">Hire talent</p>
+        </button>
+        <button id="role-provider" type="button" onclick="app.setRole('provider')" class="role-card border-2 border-slate-700/70 bg-slate-900/40 text-slate-400 rounded-2xl p-4 text-center cursor-pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="mx-auto mb-1.5"><path d="M12 2l2.4 5.5L20 8l-4.4 4L17 18l-5-3-5 3 1.4-6L4 8l5.6-.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <h4 class="text-sm font-bold">IT Provider</h4>
+          <p class="text-[10px] opacity-70 mt-0.5">Offer services</p>
+        </button>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="flex border-b border-slate-800 mb-6">
+        <button id="tab-login" type="button" onclick="app.setMode('login')" class="flex-1 pb-3 border-b-2 border-indigo-500 text-indigo-400 font-bold text-sm transition-all cursor-pointer">Sign In</button>
+        <button id="tab-signup" type="button" onclick="app.setMode('signup')" class="flex-1 pb-3 border-b-2 border-transparent text-slate-500 font-bold text-sm transition-all cursor-pointer hover:text-slate-300">Create Account</button>
+      </div>
+
+      <!-- Form -->
+      <form onsubmit="app.handleAuth(event)" class="space-y-4" autocomplete="off">
+        <div id="field-name" class="hidden">
+          <label class="label">Full Name</label>
+          <input type="text" id="auth-name" class="input" placeholder="John Doe">
+        </div>
+
+        <div>
+          <label class="label">Email Address</label>
+          <input type="email" id="auth-email" required class="input" placeholder="name@example.com">
+        </div>
+
+        <div>
+          <label class="label">Password</label>
+          <input type="password" id="auth-password" required class="input" placeholder="••••••••">
+        </div>
+
+        <div id="field-confirm" class="hidden">
+          <label class="label">Confirm Password</label>
+          <input type="password" id="auth-confirm" class="input" placeholder="••••••••">
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn btn-primary w-full !py-3.5 !text-sm mt-2">
+          Sign In
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-[11px] text-slate-600 mt-6 reveal reveal-visible" style="transition-delay:160ms">
+      Serviro MVP · Built with Firebase Auth &amp; Firestore
+    </p>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
