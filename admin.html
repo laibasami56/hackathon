@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Serviro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body data-page="admin" class="min-h-screen">
+
+  <!-- NAV -->
+  <nav class="nav-glass sticky top-0 z-40 px-4 sm:px-6 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg brand-mark flex items-center justify-center">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="white"/></svg>
+        </div>
+        <span class="font-display font-bold text-lg text-body">Serv<span class="gradient-text">iro</span></span>
+        <span class="chip hidden sm:inline-flex ml-1" style="background:var(--info-soft); color:var(--info); border-color: color-mix(in srgb, var(--info) 35%, transparent);">Admin</span>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button onclick="app.toggleTheme()" class="btn btn-ghost btn-icon" aria-label="Toggle theme">
+          <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" class="hidden"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2.2M12 19.8V22M4.2 4.2l1.55 1.55M18.25 18.25l1.55 1.55M2 12h2.2M19.8 12H22M4.2 19.8l1.55-1.55M18.25 5.75l1.55-1.55" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" class="hidden"><path d="M20 14.5A8.5 8.5 0 1110.5 4a6.8 6.8 0 009.5 10.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="user-email-slot hidden sm:inline text-xs text-muted">—</span>
+        <button onclick="app.logout()" class="btn btn-ghost btn-sm">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+    <div class="reveal">
+      <h1 class="font-display text-2xl sm:text-3xl font-bold text-body">System <span class="gradient-text">overview</span></h1>
+      <p class="text-dim text-sm mt-1.5">Everyone and everything on Serviro, live.</p>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mt-6">
+      <div class="card reveal rounded-2xl p-4">
+        <p class="text-[11px] text-muted font-semibold uppercase tracking-wide">Total Users</p>
+        <p class="font-display font-bold text-2xl mt-1 text-body" id="stat-users">0</p>
+      </div>
+      <div class="card reveal rounded-2xl p-4" style="transition-delay:40ms">
+        <p class="text-[11px] text-muted font-semibold uppercase tracking-wide">Customers</p>
+        <p class="font-display font-bold text-2xl mt-1 text-accent" id="stat-customers">0</p>
+      </div>
+      <div class="card reveal rounded-2xl p-4" style="transition-delay:80ms">
+        <p class="text-[11px] text-muted font-semibold uppercase tracking-wide">Providers</p>
+        <p class="font-display font-bold text-2xl mt-1 text-violet" id="stat-providers">0</p>
+      </div>
+      <div class="card reveal rounded-2xl p-4" style="transition-delay:120ms">
+        <p class="text-[11px] text-muted font-semibold uppercase tracking-wide">Bookings</p>
+        <p class="font-display font-bold text-2xl mt-1 text-info" id="stat-bookings">0</p>
+      </div>
+      <div class="card reveal rounded-2xl p-4" style="transition-delay:160ms">
+        <p class="text-[11px] text-muted font-semibold uppercase tracking-wide">Reviews</p>
+        <p class="font-display font-bold text-2xl mt-1 text-warning" id="stat-reviews">0</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 sm:grid-cols-5 gap-3 mt-4">
+      <div class="card reveal rounded-xl p-3 text-center">
+        <p class="font-display font-bold text-lg text-warning" id="stat-b-pending">0</p>
+        <p class="text-[10px] text-muted font-semibold uppercase mt-0.5">Pending</p>
+      </div>
+      <div class="card reveal rounded-xl p-3 text-center" style="transition-delay:30ms">
+        <p class="font-display font-bold text-lg text-info" id="stat-b-accepted">0</p>
+        <p class="text-[10px] text-muted font-semibold uppercase mt-0.5">Accepted</p>
+      </div>
+      <div class="card reveal rounded-xl p-3 text-center" style="transition-delay:60ms">
+        <p class="font-display font-bold text-lg text-violet" id="stat-b-progress">0</p>
+        <p class="text-[10px] text-muted font-semibold uppercase mt-0.5">In Progress</p>
+      </div>
+      <div class="card reveal rounded-xl p-3 text-center" style="transition-delay:90ms">
+        <p class="font-display font-bold text-lg text-success" id="stat-b-completed">0</p>
+        <p class="text-[10px] text-muted font-semibold uppercase mt-0.5">Completed</p>
+      </div>
+      <div class="card reveal rounded-xl p-3 text-center" style="transition-delay:120ms">
+        <p class="font-display font-bold text-lg text-danger" id="stat-b-rejected">0</p>
+        <p class="text-[10px] text-muted font-semibold uppercase mt-0.5">Rejected</p>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <section class="mt-9">
+      <div class="reveal flex items-center gap-1 pill-tabs w-fit overflow-x-auto no-scrollbar max-w-full">
+        <button data-admin-tab="users" onclick="app.setAdminTab('users')" class="pill-tab active">Users</button>
+        <button data-admin-tab="providers" onclick="app.setAdminTab('providers')" class="pill-tab">Providers</button>
+        <button data-admin-tab="bookings" onclick="app.setAdminTab('bookings')" class="pill-tab">Bookings</button>
+        <button data-admin-tab="reviews" onclick="app.setAdminTab('reviews')" class="pill-tab">Reviews</button>
+      </div>
+
+      <div class="reveal mt-5 card rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead id="admin-thead" class="text-left text-[11px] uppercase tracking-wider text-muted surface-flat"></thead>
+            <tbody id="admin-tbody" class="divide-y divide-[var(--border)]"></tbody>
+          </table>
+        </div>
+        <div id="admin-empty" class="hidden text-center py-14">
+          <p class="text-3xl mb-2">📂</p>
+          <p class="text-muted text-sm">Nothing here yet.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- EDIT / DETAIL MODAL (content injected dynamically) -->
+  <div id="modal-edit" class="hidden fixed inset-0 z-[100] flex items-end sm:items-center justify-center">
+    <div class="modal-backdrop absolute inset-0" onclick="app.closeModal('modal-edit')"></div>
+    <div class="modal-panel relative rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg max-h-[92vh] shadow-2xl flex flex-col">
+      <div id="edit-content" class="flex flex-col flex-1 min-h-0"></div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRM MODAL -->
+  <div id="modal-delete" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+    <div class="modal-backdrop absolute inset-0" onclick="app.closeModal('modal-delete')"></div>
+    <div class="modal-panel relative rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center">
+      <div class="w-14 h-14 rounded-full flex items-center justify-center text-2xl mx-auto" style="background:var(--danger-soft);">🗑️</div>
+      <h3 class="font-display font-bold text-lg mt-4 text-body" id="delete-title">Delete this record?</h3>
+      <p class="text-muted text-sm mt-1">This action can't be undone.</p>
+      <div class="flex gap-3 mt-5">
+        <button onclick="app.closeModal('modal-delete')" class="btn btn-ghost flex-1">Cancel</button>
+        <button id="confirm-delete-btn" class="btn btn-danger flex-1">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-root"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
