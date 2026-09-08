@@ -6,108 +6,267 @@
 <title>Customer Dashboard — Serviro</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 </head>
-<body data-page="customer" class="text-slate-100 min-h-screen">
+<body data-page="customer" class="min-h-screen">
 
   <!-- NAV -->
   <nav class="nav-glass sticky top-0 z-40 px-4 sm:px-6 py-3.5">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center">
+        <div class="w-8 h-8 rounded-lg brand-mark flex items-center justify-center">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="white"/></svg>
         </div>
-        <span class="font-display font-bold text-lg">Serv<span class="gradient-text">iro</span></span>
-        <span class="chip hidden sm:inline-flex">Customer</span>
+        <span class="font-display font-bold text-lg text-body">Serv<span class="gradient-text">iro</span></span>
+        <span class="chip hidden sm:inline-flex ml-1">Customer</span>
       </div>
 
-      <div class="hidden md:flex items-center gap-4">
+      <div class="hidden md:flex items-center gap-1 pill-tabs">
+        <button data-tab="discover" onclick="app.setCustomerTab('discover')" class="pill-tab active">Discover</button>
+        <button data-tab="bookings" onclick="app.setCustomerTab('bookings')" class="pill-tab">My Bookings</button>
+      </div>
+
+      <div class="hidden md:flex items-center gap-3">
+        <button onclick="app.toggleTheme()" class="btn btn-ghost btn-icon" aria-label="Toggle theme">
+          <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" class="hidden"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2.2M12 19.8V22M4.2 4.2l1.55 1.55M18.25 18.25l1.55 1.55M2 12h2.2M19.8 12H22M4.2 19.8l1.55-1.55M18.25 5.75l1.55-1.55" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" class="hidden"><path d="M20 14.5A8.5 8.5 0 1110.5 4a6.8 6.8 0 009.5 10.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </button>
         <div class="text-right">
-          <p class="user-name-slot text-sm font-semibold leading-tight">—</p>
-          <p class="user-email-slot text-[11px] text-slate-500 leading-tight">—</p>
+          <p class="user-name-slot text-sm font-semibold leading-tight text-body">—</p>
+          <p class="user-email-slot text-[11px] text-muted leading-tight">—</p>
         </div>
-        <img class="user-avatar-slot w-9 h-9 rounded-full bg-slate-800 border border-slate-700" alt="avatar">
-        <button onclick="app.logout()" class="btn btn-ghost !px-3 !py-2">
+        <img class="user-avatar-slot w-9 h-9 rounded-full surface-2 avatar-ring" alt="avatar">
+        <button onclick="app.logout()" class="btn btn-ghost btn-icon" title="Logout" aria-label="Logout">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Logout
         </button>
       </div>
 
-      <button onclick="app.toggleMobileMenu()" class="md:hidden btn btn-ghost btn-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
+      <div class="md:hidden flex items-center gap-2">
+        <button onclick="app.toggleTheme()" class="btn btn-ghost btn-icon">
+          <svg id="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" class="hidden"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2.2M12 19.8V22M4.2 4.2l1.55 1.55M18.25 18.25l1.55 1.55M2 12h2.2M19.8 12H22M4.2 19.8l1.55-1.55M18.25 5.75l1.55-1.55" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg id="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" class="hidden"><path d="M20 14.5A8.5 8.5 0 1110.5 4a6.8 6.8 0 009.5 10.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </button>
+        <button onclick="app.toggleMobileMenu()" class="btn btn-ghost btn-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
     </div>
 
-    <div id="mobile-menu" class="hidden md:hidden mt-4 pt-4 border-t border-slate-800 flex items-center justify-between">
-      <div>
-        <p class="user-name-slot text-sm font-semibold">—</p>
-        <p class="user-email-slot text-[11px] text-slate-500">—</p>
+    <div id="mobile-menu" class="hidden md:hidden mt-4 pt-4 border-t divider">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <p class="user-name-slot text-sm font-semibold text-body">—</p>
+          <p class="user-email-slot text-[11px] text-muted">—</p>
+        </div>
+        <button onclick="app.logout()" class="btn btn-ghost btn-sm">Logout</button>
       </div>
-      <button onclick="app.logout()" class="btn btn-ghost !px-3 !py-2">Logout</button>
+      <div class="flex flex-col gap-1.5">
+        <button onclick="app.setCustomerTab('discover')" data-mtab="discover" class="text-left px-3 py-2 rounded-lg text-sm font-semibold hover:opacity-80" style="background:var(--accent-soft); color:var(--accent);">Discover Providers</button>
+        <button onclick="app.setCustomerTab('bookings')" data-mtab="bookings" class="text-left px-3 py-2 rounded-lg text-sm font-semibold text-dim">My Bookings</button>
+      </div>
     </div>
   </nav>
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
-    <!-- Hero -->
     <div class="reveal">
-      <h1 class="font-display text-2xl sm:text-3xl font-bold">Find your next <span class="gradient-text">IT expert</span></h1>
-      <p class="text-slate-400 text-sm mt-1.5">Browse vetted developers, designers and IT specialists, then file a complaint to get it resolved.</p>
+      <h1 class="font-display text-2xl sm:text-3xl font-bold text-body">Find your next <span class="gradient-text">IT expert</span></h1>
+      <p class="text-dim text-sm mt-1.5" id="hero-sub">Browse vetted developers, designers and IT specialists — and book with confidence.</p>
     </div>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-3 gap-3 sm:gap-4 mt-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-6">
       <div class="card reveal rounded-2xl p-4 sm:p-5">
-        <div class="stat-icon bg-indigo-500/15 text-indigo-400 mb-3">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.8"/></svg>
+        <div class="stat-icon mb-3" style="background:var(--accent-soft); color:var(--accent);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.8"/></svg>
         </div>
-        <p id="stat-total" class="font-display text-2xl font-bold">0</p>
-        <p class="text-xs text-slate-500 mt-0.5">Total Complaints</p>
+        <p id="stat-total" class="font-display text-2xl font-bold text-body">0</p>
+        <p class="text-xs text-muted mt-0.5">Total Bookings</p>
       </div>
       <div class="card reveal rounded-2xl p-4 sm:p-5" style="transition-delay:60ms">
-        <div class="stat-icon bg-violet-500/15 text-violet-400 mb-3">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div class="stat-icon mb-3" style="background:var(--violet-soft); color:var(--violet);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </div>
-        <p id="stat-active" class="font-display text-2xl font-bold">0</p>
-        <p class="text-xs text-slate-500 mt-0.5">Active Complaints</p>
+        <p id="stat-progress" class="font-display text-2xl font-bold text-body">0</p>
+        <p class="text-xs text-muted mt-0.5">In Progress</p>
       </div>
       <div class="card reveal rounded-2xl p-4 sm:p-5" style="transition-delay:120ms">
-        <div class="stat-icon bg-emerald-500/15 text-emerald-400 mb-3">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="stat-icon mb-3" style="background:var(--success-soft); color:var(--success);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <p id="stat-completed" class="font-display text-2xl font-bold">0</p>
-        <p class="text-xs text-slate-500 mt-0.5">Resolved</p>
+        <p id="stat-completed" class="font-display text-2xl font-bold text-body">0</p>
+        <p class="text-xs text-muted mt-0.5">Completed</p>
+      </div>
+      <div class="card reveal rounded-2xl p-4 sm:p-5" style="transition-delay:180ms">
+        <div class="stat-icon mb-3" style="background:var(--warning-soft); color:var(--warning);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 17.3l-5.4 3 1.4-6L3 9.9l6.1-.5L12 3.8l2.9 5.6 6.1.5-5 4.4 1.4 6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <p id="stat-pending" class="font-display text-2xl font-bold text-body">0</p>
+        <p class="text-xs text-muted mt-0.5">Awaiting Review</p>
       </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="flex items-center gap-2 mt-8 reveal">
-      <button id="customer-tab-browse" onclick="app.setCustomerTab('browse')" class="btn btn-primary !px-4 !py-2 text-xs">Browse Providers</button>
-      <button id="customer-tab-mycomplaints" onclick="app.setCustomerTab('mycomplaints')" class="btn btn-ghost !px-4 !py-2 text-xs">My Complaints</button>
-    </div>
-
-    <!-- Browse Panel -->
-    <section id="panel-browse" class="mt-6">
-      <!-- Search & Filter -->
+    <!-- DISCOVER -->
+    <section id="tab-discover" class="mt-9">
       <div class="card rounded-2xl p-4 flex flex-col sm:flex-row gap-3 reveal">
         <div class="relative flex-1">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           <input id="search-input" oninput="app.filterProviders()" class="input !pl-10" placeholder="Search by name, service or skill…">
         </div>
-        <select id="filter-service" onchange="app.filterProviders()" class="input sm:max-w-[220px]"></select>
+        <select id="filter-service" onchange="app.filterProviders()" class="input sm:max-w-[200px]"><option value="">All Services</option></select>
+        <select id="filter-availability" onchange="app.filterProviders()" class="input sm:max-w-[180px]">
+          <option value="">Any Availability</option>
+          <option value="Available Now">Available Now</option>
+          <option value="Busy">Busy</option>
+        </select>
+        <select id="filter-sort" onchange="app.filterProviders()" class="input sm:max-w-[190px]">
+          <option value="rating">Sort: Top Rated</option>
+          <option value="price-low">Sort: Price (Low)</option>
+          <option value="price-high">Sort: Price (High)</option>
+          <option value="experience">Sort: Most Experienced</option>
+        </select>
       </div>
 
-      <div id="providers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6"></div>
+      <p class="text-xs text-muted mt-3" id="results-count"></p>
+
+      <div id="providers-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mt-4"></div>
+
+      <div id="providers-empty" class="hidden text-center py-16">
+        <p class="text-4xl mb-3">🔍</p>
+        <p class="font-semibold text-body">No providers match your filters</p>
+        <p class="text-muted text-sm mt-1">Try a different search term or clear your filters.</p>
+      </div>
     </section>
 
-    <!-- My Complaints Panel -->
-    <section id="panel-mycomplaints" class="mt-6 hidden">
-      <div id="mycomplaints-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <!-- BOOKINGS -->
+    <section id="tab-bookings" class="mt-9 hidden">
+      <div class="flex flex-wrap gap-2 reveal" id="booking-status-filters"></div>
+      <div id="bookings-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5"></div>
+      <div id="bookings-empty" class="hidden text-center py-16">
+        <p class="text-4xl mb-3">📋</p>
+        <p class="font-semibold text-body">No bookings yet</p>
+        <p class="text-muted text-sm mt-1">Browse providers and submit your first project request.</p>
+        <button onclick="app.setCustomerTab('discover')" class="btn btn-primary btn-sm mt-4">Discover Providers</button>
+      </div>
     </section>
-
   </main>
+
+  <!-- PROVIDER PROFILE MODAL -->
+  <div id="modal-profile" class="hidden fixed inset-0 z-[100] flex items-end sm:items-center justify-center">
+    <div class="modal-backdrop absolute inset-0" onclick="app.closeModal('modal-profile')"></div>
+    <div class="modal-panel relative rounded-t-3xl sm:rounded-3xl w-full sm:max-w-2xl max-h-[92vh] shadow-2xl flex flex-col">
+      <div id="profile-content" class="flex flex-col flex-1 min-h-0"></div>
+    </div>
+  </div>
+
+  <!-- BOOKING FORM MODAL -->
+  <div id="modal-booking" class="hidden fixed inset-0 z-[100] flex items-end sm:items-center justify-center">
+    <div class="modal-backdrop absolute inset-0" onclick="app.closeModal('modal-booking')"></div>
+    <div class="modal-panel relative rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg max-h-[92vh] shadow-2xl flex flex-col">
+      <div class="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 flex items-start justify-between flex-shrink-0 border-b divider">
+        <div>
+          <h3 class="font-display font-bold text-xl text-body">Book this provider</h3>
+          <p class="text-muted text-xs mt-1" id="booking-provider-label"></p>
+        </div>
+        <button onclick="app.closeModal('modal-booking')" class="btn btn-ghost btn-icon !rounded-full">✕</button>
+      </div>
+
+      <form id="booking-form" onsubmit="app.submitBooking(event)" class="flex flex-col flex-1 min-h-0">
+        <div class="px-6 sm:px-8 py-5 space-y-4 overflow-y-auto no-scrollbar flex-1 min-h-0">
+          <input type="hidden" id="bk-provider-id">
+          <div>
+            <label class="label">Service Needed *</label>
+            <input id="bk-service" required type="text" class="input" placeholder="e.g. Full-Stack Web Development">
+          </div>
+          <div>
+            <label class="label">Project Title *</label>
+            <input id="bk-title" required type="text" class="input" placeholder="e.g. E-commerce store redesign">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="label">Preferred Date *</label>
+              <input id="bk-date" required type="date" class="input">
+            </div>
+            <div>
+              <label class="label">Preferred Time *</label>
+              <input id="bk-time" required type="time" class="input">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="label">Location *</label>
+              <input id="bk-location" required type="text" class="input" placeholder="Remote / City">
+            </div>
+            <div>
+              <label class="label">Budget (USD) *</label>
+              <input id="bk-budget" required type="number" min="1" class="input" placeholder="500">
+            </div>
+          </div>
+          <div>
+            <label class="label">Project Description *</label>
+            <textarea id="bk-description" required rows="3" class="input" placeholder="Describe what you need built…"></textarea>
+          </div>
+          <div>
+            <label class="label">Additional Requirements</label>
+            <textarea id="bk-requirements" rows="2" class="input" placeholder="Optional — tech stack, deadlines, etc."></textarea>
+          </div>
+          <p id="booking-error" class="hidden text-xs px-3 py-2 rounded-lg" style="background:var(--danger-soft); color:var(--danger);"></p>
+        </div>
+        <div class="px-6 sm:px-8 py-5 border-t divider flex-shrink-0">
+          <button type="submit" id="booking-submit-btn" class="btn btn-primary btn-block !py-3.5">
+            <span>Submit Booking Request</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- BOOKING SUCCESS MODAL -->
+  <div id="modal-success" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <div class="modal-panel relative rounded-3xl w-full max-w-sm p-8 text-center shadow-2xl" style="border-color: color-mix(in srgb, var(--success) 35%, var(--border));">
+      <div class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto" style="background:var(--success-soft); border:1px solid color-mix(in srgb, var(--success) 35%, transparent);">✅</div>
+      <h3 class="font-display font-bold text-xl mt-4 text-body">Booking Submitted!</h3>
+      <p class="text-muted text-sm mt-2">Your request has been sent. Track its status from My Bookings.</p>
+      <div class="mt-4 surface-2 rounded-xl px-4 py-3">
+        <p class="text-[10px] text-muted uppercase tracking-wider font-semibold">Booking ID</p>
+        <p class="font-mono text-accent font-semibold text-sm mt-1" id="success-booking-id"></p>
+      </div>
+      <button onclick="app.closeSuccessModal()" class="btn btn-primary btn-block mt-5">View My Bookings</button>
+    </div>
+  </div>
+
+  <!-- REVIEW MODAL -->
+  <div id="modal-review" class="hidden fixed inset-0 z-[100] flex items-end sm:items-center justify-center">
+    <div class="modal-backdrop absolute inset-0" onclick="app.closeModal('modal-review')"></div>
+    <div class="modal-panel relative rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[92vh] shadow-2xl flex flex-col">
+      <div class="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 flex-shrink-0 border-b divider">
+        <h3 class="font-display font-bold text-xl text-body">Leave a review</h3>
+        <p class="text-muted text-xs mt-1" id="review-provider-label"></p>
+      </div>
+      <form id="review-form" onsubmit="app.submitReview(event)" class="flex flex-col flex-1 min-h-0">
+        <div class="px-6 sm:px-8 py-5 space-y-4 overflow-y-auto no-scrollbar flex-1 min-h-0">
+          <input type="hidden" id="rv-booking-id">
+          <input type="hidden" id="rv-provider-id">
+          <div>
+            <label class="label mb-2">Your Rating</label>
+            <div id="star-input" class="flex gap-2 text-3xl"></div>
+          </div>
+          <div>
+            <label class="label">Your Feedback</label>
+            <textarea id="rv-text" required rows="3" class="input" placeholder="How was your experience working with this provider?"></textarea>
+          </div>
+          <p id="review-error" class="hidden text-xs px-3 py-2 rounded-lg" style="background:var(--danger-soft); color:var(--danger);"></p>
+        </div>
+        <div class="px-6 sm:px-8 py-5 border-t divider flex-shrink-0">
+          <button type="submit" class="btn btn-primary btn-block">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-root"></div>
 
   <script type="module" src="app.js"></script>
 </body>
