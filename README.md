@@ -1,28 +1,25 @@
 # Serviro — Web Development & IT Service Marketplace
 
-A real, working MVP connecting customers with web development / IT service
-providers, where customers file **complaints/support requests** against a
-provider and track them through to resolution. Built with plain HTML,
-Tailwind CSS (CDN), vanilla JavaScript, and Firebase (Authentication +
-Firestore).
+A real, working MVP built with plain **HTML + Tailwind CSS (CDN) + vanilla
+JavaScript + Firebase** (Authentication + Firestore). Customers browse
+providers and book them; providers manage bookings through a full workflow;
+admins oversee everything.
 
 ## Files
 
 ```
-index.html      Auth + role-selection screen (Customer / Provider, Sign In / Create Account)
-customer.html   Customer dashboard — browse & search providers, view profiles, file complaints, track them, review
-provider.html   Provider dashboard — manage incoming complaints through the full resolution workflow
-app.js          ALL application logic (single file, as required) — Firebase config, auth, Firestore CRUD, UI
-style.css       Custom animations, scroll-reveal, cards, badges, buttons, modals, SweetAlert2 theming
+index.html      Auth + role-selection screen (Customer / Provider)
+customer.html   Customer dashboard — discover providers, book, track, review
+provider.html   Provider dashboard — manage incoming bookings end to end
+admin.html      Admin dashboard — stats + view/edit/delete across all data
+app.js          ALL app logic in one file (Firebase config, auth, Firestore, UI)
+style.css       Design system: light/dark theme tokens, components, animation
 README.md       This file
 ```
 
-There is no admin panel/dashboard in this build — it was removed on request.
-Only the Customer and Provider roles exist.
+## Run it
 
-## Running it
-
-No build step. Serve the folder with any static server and open `index.html`:
+No build step — serve the folder statically and open `index.html`:
 
 ```bash
 npx serve .
@@ -30,68 +27,86 @@ npx serve .
 python3 -m http.server 8080
 ```
 
-Firebase project credentials are already wired up in `app.js` (Auth +
-Firestore). Make sure, in the Firebase console for this project:
-
+In the Firebase console for this project, make sure:
 - **Authentication → Sign-in method → Email/Password** is enabled.
-- **Firestore Database** is created (in production or test mode) with rules
-  that allow authenticated reads/writes to `users`, `providers`,
-  `complaints` and `reviews` (a permissive test-mode rule set is fine for a
-  hackathon demo).
+- **Firestore Database** exists, with rules that allow authenticated
+  read/write on `users`, `providers`, `bookings`, `reviews`, `system`
+  (permissive test-mode rules are fine for a hackathon demo).
 
-## The complaint workflow
+## Logging in
+
+The role cards on the sign-in screen only matter for **Create Account**
+(they set the new user's role). **Sign In** always redirects to whichever
+dashboard matches the account's real role in Firestore — so there's nothing
+to toggle, just sign in.
+
+### Demo accounts (seeded automatically on first load)
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@serviro.com` | `Serviro@Admin123` |
+| Provider | `sarah.khan@serviro.io` | `Provider@123` |
+| Provider | `ali.ahmed@serviro.io` | `Provider@123` |
+| Provider | `hamza.malik@serviro.io` | `Provider@123` |
+| Provider | `ayesha.noor@serviro.io` | `Provider@123` |
+| Provider | `usman.raza@serviro.io` | `Provider@123` |
+| Provider | `zainab.fatima@serviro.io` | `Provider@123` |
+
+These are **real Firebase Auth accounts** (created once via an isolated
+secondary Firebase app instance so seeding never disturbs whoever is
+currently signed in) — not fake placeholder data. Only someone with the
+password can sign in and manage that account's bookings, exactly like any
+other user. The admin login is not exposed anywhere in the customer/provider
+UI — you need the credentials above.
+
+Every account — customer, provider, or admin — only ever sees and manages
+its own data: a provider's dashboard is filtered to bookings where
+`providerId` matches their own UID, and every page checks the signed-in
+user's role in Firestore and redirects away if it doesn't match.
+
+## The booking workflow
 
 ```
-Customer Login → Browse Providers → View Provider → File a Complaint →
-Pending → Provider Accepts → Accepted → Start Resolving → In Progress →
-Resolve Complaint → Completed → Customer Views Resolution → Customer Reviews
+Customer Login → Browse Providers → View Provider → Book Provider →
+Pending → Provider Accepts/Rejects → Accepted → Start Project →
+In Progress → Complete Project (URL + note) → Completed →
+Customer Opens Live URL → Customer Reviews
 ```
 
-- A customer files a complaint against a specific provider (subject,
-  preferred date/time, location, estimated budget, complaint details,
-  optional notes). This gets a generated ID like `CMP-2026-A82K91` and is
-  saved to Firestore with status `Pending`.
-- The provider can **Accept** or **Reject** a pending complaint. Accept →
-  `Accepted`, unlocking **Start Resolving** → `In Progress`, unlocking
-  **Resolve Complaint** (requires a valid `http(s)://` resolution URL + a
-  resolution note) → `Completed`.
-- The customer then sees a **View Resolution** button on that complaint and
-  can leave a 1–5 star review (once per complaint), which feeds into the
-  provider's average rating.
+- Booking a provider generates an ID like `SRV-2026-A82K91`.
+- A provider can **Accept** or **Reject** a pending booking. A rejected
+  booking never becomes anything else. Accept → **Start Project** →
+  In Progress → **Complete Project** (requires a valid `http(s)://` URL and
+  a note) → Completed.
+- The customer then sees an **Open Live Project** button and can leave one
+  star rating + review per booking, which recalculates the provider's
+  average rating.
 
-## Demo providers vs. real providers
+## Admin capabilities
 
-Six seeded demo providers (Sarah Khan, Ali Ahmed, Hamza Malik, Ayesha Noor,
-Usman Raza, Zainab Fatima) exist purely so the "Browse Providers" list isn't
-empty for a first-time visitor. They're marked `isDemo: true`, show a
-**Demo** badge, and their **File Complaint** action is disabled with an
-explanatory note — since they have no real Firebase account, a complaint
-against one would have nowhere to be seen from a provider dashboard.
+- Live stats: total/customer/provider counts, bookings by status, reviews.
+- **Users** — view every account, edit name/role.
+- **Providers** — view, edit profile fields (service, rate, skills,
+  location, availability, about), or delete.
+- **Bookings** — view full detail, manually override status, or delete.
+- **Reviews** — view and delete.
+- From the Users tab, **Activity** jumps to Bookings filtered to that
+  person's requests (as customer) or jobs (as provider) — this is how admin
+  checks a specific customer's or provider's progress.
 
-To test the full workflow, file a complaint against a **real, signed-up
-provider account** (see steps below).
+## Theme
 
-## How to test end-to-end (2 browser profiles needed)
+One accent color (orange), two surfaces:
+- **Dark** — near-black background.
+- **Light** — white background.
 
-1. **Window A (normal):** open `index.html` → Customer → Create Account.
-2. **Window B (incognito/private):** open `index.html` → Provider → Create
-   Account. This creates a real provider profile that instantly appears in
-   Window A's "Browse Providers" (alongside the demo ones, which show a
-   **Demo** badge).
-3. In Window A, search/filter, open the **real** provider's profile, click
-   **File a Complaint**, fill the form, submit → you get a
-   `CMP-2026-XXXXXX` complaint ID.
-4. In Window B, open the Provider Dashboard — the complaint appears with
-   **Accept** / **Reject**. Walk it through Accept → Start Resolving →
-   Resolve Complaint (needs a valid `https://` URL + a resolution note).
-5. Back in Window A → **My Complaints** → the resolved complaint shows
-   **View Resolution** and **Leave a Review**.
+Toggle with the sun/moon button in the navbar; the choice is saved to
+`localStorage` and persists across pages and reloads.
 
 ## Firestore collections
 
 - `users` — `{ uid, name, email, role, createdAt }`
-- `providers` — profile + service info, doc ID is either a demo ID or the
-  provider's Firebase `uid`
-- `complaints` — doc ID = generated complaint ID; full request + status +
-  resolution fields
-- `reviews` — doc ID = complaint ID (enforces one review per complaint)
+- `providers` — doc ID = provider's UID; profile + service info
+- `bookings` — doc ID = generated booking ID; full request + status + timestamps
+- `reviews` — doc ID = booking ID (enforces one review per booking)
+- `system/seed_status` — internal flag so demo accounts are only seeded once
